@@ -1,11 +1,14 @@
 from utils import *
 from tkinter import *
 import chess
+import exceptions
 
 class chess_view():
     def __init__(self,window):
+        self.all_squares_to_be_highlighted = None
         self.chess=chess.chess()
         self.images={}
+        self.selected_piece_position = None
         self.window=window
         self.BOARD_COLOR_1 = BOARD_COLOR_1
         self.BOARD_COLOR_2 = BOARD_COLOR_2
@@ -14,10 +17,39 @@ class chess_view():
         self.start_new_game()
         #print("Valar Morghulis")
 
+    def shift(self, start_pos, end_pos):
+        selected_piece = self.chess.get_piece_at(start_pos)
+        piece_at_destination =self.chess.get_piece_at(end_pos)
+        if not piece_at_destination or piece_at_destination.color != selected_piece.color:
+            try:
+                self.chess.pre_move_validation(start_pos,end_pos)
+            except exceptions.ChessError as error:
+                self.info_label["text"] = error.__class__.__name__
+            else:
+                self.update_label(selected_piece, start_pos,end_pos)
+
+    def update_label(self,piece,start,end):
+        pass
+
+    def update_highlight_list(self, position):
+        self.all_squares_to_be_highlighted = None
+        try:
+            piece = self.chess.get_piece_at(position)
+        except:
+            piece = None
+        if piece and (piece.color == self.chess.player_turn):
+            self.selected_piece_position = position
+            self.all_squares_to_be_highlighted = list(map(self.chess.get_numeric_notation,self.chess.get_piece_at(position).moves_available(position)))
+
     def on_square_clicked(self, event):
         clicked_row, clicked_column =self.get_clicked_row_column(event)
-        print("Hey you clicked on", clicked_row, clicked_column)
-        #print("Valar Morghulis")
+        position_of_click = self.chess.get_alphanumeric_position((clicked_row, clicked_column))
+        if self.selected_piece_position:
+            self.shift(self.selected_piece_position,position_of_click)
+            self.selected_piece_position = None
+        self.update_highlight_list(position_of_click)
+        self.draw_board()
+        self.draw_all_pieces()
 
     def get_clicked_row_column(self, event):
         col_size = row_size = DIMENSION_OF_EACH_SQUARE
@@ -62,7 +94,10 @@ class chess_view():
                 y1 = ((7-row) * DIMENSION_OF_EACH_SQUARE)
                 x2 = x1 + DIMENSION_OF_EACH_SQUARE
                 y2 = y1 + DIMENSION_OF_EACH_SQUARE
-                self.canvas.create_rectangle(x1, y1, x2, y2,  fill=color, tags="area")
+                if(self.all_squares_to_be_highlighted and (row,col) in self.all_squares_to_be_highlighted):
+                    self.canvas.create_rectangle(x1, y1, x2, y2, fill=HIGHLIGHT_COLOR)
+                else:
+                    self.canvas.create_rectangle(x1, y1, x2, y2,  fill=color, tags="area")
                 color = self.get_alternate_color(color)
 
     def get_alternate_color(self, current_color):

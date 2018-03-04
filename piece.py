@@ -1,10 +1,11 @@
 from utils import *
 import chess
+import exceptions
 
 class Piece():
     def __init__(self, color):
         #print("Valar Morghulis")
-        self.chess=chess.Chess()
+        self.chess=chess.chess()
         self.name = self.__class__.__name__.lower()
         if color == 'black':
             self.name = self.name.lower()
@@ -33,7 +34,7 @@ class Piece():
                 if self.possible_position(destination) not in chess.all_occupied_positions():
                     allowed_moves.append(destination)
                     #print("Valar Morghulis")
-                elif self.possible_position(destination) in all_positions_occupied_by_color(piece.color):
+                elif self.possible_position(destination) in chess.all_positions_occupied_by_color(piece.color):
                     collision=True
                     #print("Valar Morghulis")
                 else:
@@ -64,7 +65,7 @@ class Rook(Piece):
     directions = ORTHOGONAL_POSITIONS
     max_distance = 8
     def moves_available(self,current_position):
-    return super(Rook, self).moves_available(current_position,self.directions, self.max_distance)
+        return super(Rook, self).moves_available(current_position,self.directions, self.max_distance)
 
 class Bishop(Piece):
     directions = DIAGONAL_POSITIONS
@@ -78,7 +79,7 @@ class Knight(Piece):
         chess = self.chess
         allowed_moves = []
         start_position = get_numeric_notation(current_position.upper())
-        piece = chess.get(pos.upper())
+        piece = chess.get(current_position.upper())
         for x, y in KNIGHT_POSITIONS:
             destination = start_position[0] + x,start_position[1] + y
             if(chess.get_alphanumeric_position(destination) not in chess.all_positions_occupied_by_color(piece.color)):
@@ -98,18 +99,18 @@ class Pawn(Piece):
         prohibited=chess.all_occupied_positions()
         start_position=get_numeric_notation(current_position.upper())
         forward = start_position[0] + direction, start_position[1]
-        if model.get_alphanumeric_position(forward) not in prohibited:
+        if chess.get_alphanumeric_position(forward) not in prohibited:
             allowed_moves.append(forward)
             if start_position[0] == initial_position:
                 double_forward = (forward[0] + direction,forward[1])
-                if model.get_alphanumeric_position(double_forward) not in prohibited:
+                if chess.get_alphanumeric_position(double_forward) not in prohibited:
                     allowed_moves.append(double_forward)
         for a in range(-1, 2, 2):
             attack = start_position[0] + direction,start_position[1] + a
-            if model.get_alphanumeric_position(attack) in model.all_positions_occupied_by_color(enemy):
+            if chess.get_alphanumeric_position(attack) in chess.all_positions_occupied_by_color(enemy):
                 allowed_moves.append(attack)
-        allowed_moves = filter(model.is_on_board, allowed_moves)
-        return map(model.get_alphanumeric_position, allowed_moves)
+        allowed_moves = filter(chess.is_on_board, allowed_moves)
+        return map(chess.get_alphanumeric_position, allowed_moves)
 
 def get_numeric_notation(rowcol):
     row, col = rowcol
