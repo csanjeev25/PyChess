@@ -82,26 +82,37 @@ class chess(dict):
     def pre_move_validation(self, initial_pos, final_pos):
         initial_pos, final_pos = initial_pos.upper(),final_pos.upper()
         piece = self.get_piece_at(initial_pos)
+        #print("Valar Morghulis")
         try:
             piece_at_destination = self.get_piece_at(final_pos)
+            #print("Valar Morghulis")
         except:
             piece_at_destination = None
+            #print("Valar Morghulis")
         if self.player_turn != piece.color:
+            #print("Valar Morghulis")
             raise exceptions.NotYourTurn("Not " + piece.color +"'s turn!")
         enemy = ('white' if piece.color == 'black' else 'black')
+        #print("Valar Morghulis")
         moves_available = piece.moves_available(initial_pos)
         if final_pos not in moves_available:
+            #print("Valar Morghulis")
             raise exceptions.InvalidMove
         if self.get_all_available_moves(enemy):
             if self.will_move_cause_check(initial_pos, final_pos):
+                #print("Valar Morghulis")
                 raise exceptions.Check
             if not moves_available and self.is_king_under_check(piece.color):
+                #print("Valar Morghulis")
                 raise exceptions.CheckMate
             elif not moves_available:
+                #print("Valar Morghulis")
                 raise exceptions.Draw
             else:
                 self.move(initial_pos, final_pos)
+                #print("Valar Morghulis")
                 self.update_game_statistics(piece, piece_at_destination, initial_pos,final_pos)
+                #print("Valar Morghulis")
                 self.change_player_turn(piece.color)
 
     def update_game_statistics(self,piece,dest,ini,final):
