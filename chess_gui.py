@@ -1,7 +1,7 @@
 from chess_utils import *
 from tkinter import *
 
-class Chess_GUI(dict):
+class Chess_GUI():
     def __init__(self,window):
         self.window=window
         self.BOARD_COLOR_1 = BOARD_COLOR_1
