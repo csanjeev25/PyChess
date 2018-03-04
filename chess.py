@@ -52,8 +52,8 @@ class chess(dict):
         #print("Valar Morghulis")
         captured_pieces = {'white': [], 'black': []}
         player_turn = None
-        halfmove_clock = 0
-        fullmove_number = 1
+        no_of_turns_since_last_capture_or_pawn_move = 0
+        moves = 1
         history = []
 
     def all_positions_occupied_by_color(self, color):
@@ -115,11 +115,24 @@ class chess(dict):
                 #print("Valar Morghulis")
                 self.change_player_turn(piece.color)
 
-    def update_game_statistics(self,piece,dest,ini,final):
-        pass
+    def update_game_statistics(self, piece, dest, start_pos,end_pos):
+        if piece.color == 'black':
+            self.moves += 1
+        self.no_of_turns_since_last_capture_or_pawn_move +=1
+        abbr = piece.name
+        if abbr == 'pawn':
+            abbr = ''
+            self.no_of_turns_since_last_capture_or_pawn_move = 0
+        if dest is None:
+            move_text = abbr + end_pos.lower()
+        else:
+            move_text = abbr + 'x' + end_pos.lower()
+            self.no_of_turns_since_last_capture_or_pawn_move = 0
+        self.history.append(move_text)
 
     def change_player_turn(self,color):
-        pass
+        enemy = ('white' if color == 'black' else 'black' )
+        self.player_turn = enemy
 
     def will_move_cause_check(self, start_position, end_position):
         tmp = deepcopy(self)

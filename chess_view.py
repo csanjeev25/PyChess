@@ -3,6 +3,8 @@ from tkinter import *
 import chess
 import exceptions
 
+window = Tk()
+
 class chess_view():
     def __init__(self,window):
         self.all_squares_to_be_highlighted = None
@@ -74,8 +76,8 @@ class chess_view():
         self.window.config(menu=self.menubar)
 
     def new_game(self):
-        pass
-        #print("Valar Morghulis")
+        self.start_new_game()
+
 
     def create_canvas(self):
         canvas_width = NUMBER_OF_COLUMNS * DIMENSION_OF_EACH_SQUARE
@@ -152,8 +154,7 @@ class chess_view():
         self.draw_all_pieces()
 
 if __name__ == "__main__":
-    window = Tk()
     window.title("Chess")
     #print("Valar Morghulis")
     gui = chess_view(window)
-window.mainloop()
+    window.mainloop()
