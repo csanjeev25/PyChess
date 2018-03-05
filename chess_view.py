@@ -2,8 +2,11 @@ from utils import *
 from tkinter import *
 import chess
 import exceptions
+import tkinter.messagebox as messagebox
 
 window = Tk()
+
+PROGRAM_NAME="PyChess"
 
 class chess_view():
     def __init__(self,window):
@@ -73,7 +76,18 @@ class chess_view():
         self.filemenu = Menu(self.menubar, tearoff=0 )
         self.filemenu.add_command(label="New Game", command=self.new_game )
         self.menubar.add_cascade(label="File", menu=self.filemenu)
+
+        self.aboutmenu = Menu(self.menubar,tearoff=0)
+        self.aboutmenu.add_command(label="About",command=self.about)
+        self.aboutmenu.add_command(label="Help",command=self.help)
+        self.menubar.add_cascade(label="Help",menu=self.aboutmenu)
         self.window.config(menu=self.menubar)
+
+    def about(self):
+    	messagebox.showinfo("About", "{}{}".format(PROGRAM_NAME, "\nThis is a Chess Game developed in Python by barasingha(Sanjeev)"))
+
+    def help(self):
+       	messagebox.showinfo("Help", "For help email to sanjeevkumarchintakindi@gmail.com", icon='question')
 
     def new_game(self):
         self.start_new_game()
