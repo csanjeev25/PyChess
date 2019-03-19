@@ -110,7 +110,7 @@ class chess(dict):
                 raise exceptions.Draw
             else:
                 self.move(initial_pos, final_pos)
-                #print("Valar Morghulis")
+                #print("Valar Dohaeris")
                 self.update_game_statistics(piece, piece_at_destination, initial_pos,final_pos)
                 #print("Valar Morghulis")
                 self.change_player_turn(piece.color)
